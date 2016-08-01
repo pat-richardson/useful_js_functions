@@ -28,6 +28,45 @@ Function.method('curry', function() {
   };
 });
 
+//memoize function to cache results for functions
+Function.method('memoized', function() {
+  var originalFunction = this;
+  var table = {};
+  var generateKey = function(args) {
+    return JSON.stringify(args);
+  };
+  
+  return function() {
+    var key = generateKey(arguments);
+    console.log(table);
+    
+    if(table[key] === undefined) {
+      table[key] = originalFunction.apply(this, arguments);
+    }
+    return table[key];
+  };
+});
+
+//track run time of scripts
+var run_time = function() {
+  var time = {
+    start: null,
+    end: null
+  };  
+  var log = function() {
+      console.log('Run Time: ' + (time.end - time.start)/1000.0);
+  };
+  
+  return {
+    start: function() {
+      time.start = new Date().getTime();
+    },
+    end: function() {
+      time.end = new Date().getTime();
+      log();
+    }
+  }; 
+};
 
 //tail recursive function for factorials 
 var factorial = function factorial(i,a){
